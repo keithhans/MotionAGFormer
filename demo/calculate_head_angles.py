@@ -1,15 +1,17 @@
 import numpy as np
 
 def calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head):
-    """
-    计算头部相对于身体的pitch和yaw角度
-    所有输入都是shape为(3,)的numpy数组，表示3D坐标点
-    返回pitch和yaw角度（单位：度）
-    """
+    print("\n=== 计算头部角度 ===")
+    
     # 1. 计算身体的坐标系
-    body_up = thorax - hip  # 身体向上的向量
-    shoulder_vec = right_shoulder - left_shoulder  # 肩部向量
-    body_forward = np.cross(shoulder_vec, body_up)  # 身体前向的向量
+    body_up = thorax - hip
+    shoulder_vec = right_shoulder - left_shoulder
+    body_forward = np.cross(shoulder_vec, body_up)
+    
+    print("\n1. 原始向量:")
+    print(f"身体向上向量: {body_up}")
+    print(f"肩部向量: {shoulder_vec}")
+    print(f"身体前向量: {body_forward}")
     
     # 标准化向量
     body_up = body_up / np.linalg.norm(body_up)
@@ -17,28 +19,49 @@ def calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head
     body_right = np.cross(body_forward, body_up)
     body_right = body_right / np.linalg.norm(body_right)
     
-    # 2. 构建身体坐标系的旋转矩阵
-    body_rotation = np.array([body_right, body_forward, body_up]).T
+    print("\n2. 标准化后的身体坐标系基向量:")
+    print(f"右向量 (X): {body_right}")
+    print(f"前向量 (Y): {body_forward}")
+    print(f"上向量 (Z): {body_up}")
     
-    # 3. 计算头部方向向量
-    head_vec = head - nose  # 从鼻子指向头顶的向量
-    neck_vec = nose - thorax  # 从胸部指向鼻子的向量
-    head_forward = np.cross(head_vec, shoulder_vec)  # 头部前向量
+    # 构建身体坐标系的旋转矩阵
+    body_rotation = np.array([body_right, body_forward, body_up]).T
+    print("\n3. 身体坐标系旋转矩阵:")
+    print(body_rotation)
+    
+    # 计算头部方向向量
+    head_vec = head - nose
+    neck_vec = nose - thorax
+    head_forward = np.cross(head_vec, shoulder_vec)
+    
+    print("\n4. 头部向量:")
+    print(f"头顶向量: {head_vec}")
+    print(f"颈部向量: {neck_vec}")
+    print(f"头部前向量: {head_forward}")
     
     # 标准化头部向量
     neck_vec = neck_vec / np.linalg.norm(neck_vec)
     head_forward = head_forward / np.linalg.norm(head_forward)
     
-    # 4. 将头部向量转换到身体坐标系
+    print("\n5. 标准化后的头部向量:")
+    print(f"颈部向量: {neck_vec}")
+    print(f"头部前向量: {head_forward}")
+    
+    # 将头部向量转换到身体坐标系
     neck_local = np.dot(body_rotation.T, neck_vec)
     head_forward_local = np.dot(body_rotation.T, head_forward)
     
-    # 5. 计算pitch和yaw角度
-    # pitch: 低头抬头角度（绕x轴）
-    pitch = np.degrees(np.arctan2(-neck_local[1], neck_local[2]))
+    print("\n6. 局部坐标系中的头部向量:")
+    print(f"局部颈部向量: {neck_local}")
+    print(f"局部头部前向量: {head_forward_local}")
     
-    # yaw: 左右转头角度（绕z轴）
+    # 计算pitch和yaw角度
+    pitch = np.degrees(np.arctan2(-neck_local[1], neck_local[2]))
     yaw = np.degrees(np.arctan2(head_forward_local[1], head_forward_local[0]))
+    
+    print("\n7. 最终角度:")
+    print(f"Pitch (低头抬头): {pitch:.2f}度")
+    print(f"Yaw (左右转头): {yaw:.2f}度")
     
     return pitch, yaw
 
