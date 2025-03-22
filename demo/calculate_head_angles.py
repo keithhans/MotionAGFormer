@@ -6,7 +6,8 @@ def calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head
     # 1. 计算身体的坐标系
     body_up = thorax - hip
     shoulder_vec = right_shoulder - left_shoulder
-    body_forward = np.cross(shoulder_vec, body_up)
+    # 修改叉积顺序：body_up × shoulder_vec 得到指向前方的向量
+    body_forward = np.cross(body_up, shoulder_vec)  # 改为上向量叉乘肩部向量
     
     print("\n1. 原始向量:")
     print(f"身体向上向量: {body_up}")
@@ -57,7 +58,7 @@ def calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head
     
     # 计算pitch和yaw角度
     pitch = np.degrees(np.arctan2(-neck_local[1], neck_local[2]))
-    yaw = np.degrees(np.arctan2(head_forward_local[1], head_forward_local[0]))
+    yaw = np.degrees(np.arctan2(neck_local[0], neck_local[1]))
     
     print("\n7. 最终角度:")
     print(f"Pitch (低头抬头): {pitch:.2f}度")
@@ -72,8 +73,8 @@ if __name__ == "__main__":
     left_shoulder = np.array([-1, 0, 2])
     right_shoulder = np.array([1, 0, 2])
     thorax = np.array([0, 0, 2])
-    nose = np.array([0, 0.2, 3])
-    head = np.array([0, 0.2, 3.5])
+    nose = np.array([0.1, 0.2, 3])
+    head = np.array([0.1, 0.2, 3.5])
     
     pitch, yaw = calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head)
     print(f"Pitch (低头抬头): {pitch:.2f}度")
