@@ -69,13 +69,21 @@ def calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head
 # 测试代码
 if __name__ == "__main__":
     # 示例坐标点
-    hip = np.array([0, 0, 0])
-    left_shoulder = np.array([-1, 0, 2])
-    right_shoulder = np.array([1, 0, 2])
-    thorax = np.array([0, 0, 2])
-    nose = np.array([0.1, 0.2, 3])
-    head = np.array([0.1, 0.2, 3.5])
-    
+    # hip = np.array([0, 0, 0])
+    # left_shoulder = np.array([-1, 0, 2])
+    # right_shoulder = np.array([1, 0, 2])
+    # thorax = np.array([0, 0, 2])
+    # nose = np.array([0.1, 0.2, 3])
+    # head = np.array([0.1, 0.2, 3.5])
+
+    hip = np.array([0, 0, 0.5154449])
+    left_shoulder = np.array([-0.09552623, -0.02224409,  0.84772354])
+    right_shoulder = np.array([0.1008563,  -0.04602984,  0.8566299 ])
+    thorax = np.array([-0.01926025, -0.0249161,   0.8698806])
+    nose = np.array([-0.03845415,  0.00920062,  0.9364334])
+    head = np.array([-0.03470165, -0.01818796,  1.        ])
+
+
     pitch, yaw = calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head)
     print(f"Pitch (低头抬头): {pitch:.2f}度")
     print(f"Yaw (左右转头): {yaw:.2f}度")
