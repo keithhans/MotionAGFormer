@@ -22,14 +22,15 @@ def calculate_left_arm_angles(hip, left_shoulder, right_shoulder, left_elbow):
     
     # 4. 计算上臂向量在身体坐标系中的表示
     upper_arm = left_elbow - left_shoulder
-    upper_arm = upper_arm / np.linalg.norm(upper_arm)
     
     # 5. 将上臂向量转换到身体坐标系
     upper_arm_local = np.dot(body_rotation.T, upper_arm)
-    
+    # print("left upper_arm_local", upper_arm_local)
+
     # 6. 计算pitch和roll角度
+    # np.arctan2(y, x)
     pitch = np.degrees(np.arctan2(-upper_arm_local[1], -upper_arm_local[2]))  # 前后摆动
-    roll = np.degrees(np.arctan2(upper_arm_local[0], -upper_arm_local[2]))    # 左右摆动
+    roll = np.degrees(np.arctan2(upper_arm_local[0], np.abs(upper_arm_local[2])))    # 左右摆动
     
     return pitch, roll
 
@@ -55,15 +56,16 @@ def calculate_right_arm_angles(hip, left_shoulder, right_shoulder, right_elbow):
     
     # 4. 计算上臂向量在身体坐标系中的表示
     upper_arm = right_elbow - right_shoulder
-    upper_arm = upper_arm / np.linalg.norm(upper_arm)
+    # upper_arm = upper_arm / np.linalg.norm(upper_arm)
     
     # 5. 将上臂向量转换到身体坐标系
     upper_arm_local = np.dot(body_rotation.T, upper_arm)
+    # print("right upper_arm_local", upper_arm_local)
     
     # 6. 计算pitch和roll角度
     pitch = np.degrees(np.arctan2(-upper_arm_local[1], -upper_arm_local[2]))  # 前后摆动
-    roll = np.degrees(np.arctan2(upper_arm_local[0], -upper_arm_local[2]))    # 左右摆动
-    
+    roll = np.degrees(np.arctan2(upper_arm_local[0], np.abs(upper_arm_local[2])))    # 左右摆动
+
     return pitch, roll
 
 # 测试代码
@@ -75,12 +77,18 @@ if __name__ == "__main__":
     # left_elbow = np.array([-0.23032123, 0.06436861, 0.88997406])
     # right_elbow = np.array([0.25813976, -0.02717768, 0.8320716])    
 
+    hip = np.array([0, 0, 0.5607828])
+    left_shoulder = np.array([-0.0509866,   0.05046325,  0.87255883])    # 11
+    right_shoulder = np.array([0.03801426, -0.10052071,  0.85002047])      # 14
+    left_elbow = np.array([0.10051101,  0.13221152,  0.91198])        # 12
+    right_elbow = np.array([0.07241791, -0.2059128,   0.8398973])        # 15
+
     # 示例坐标点（简化版）
-    hip = np.array([0, 0, 0])  # 原点
-    left_shoulder = np.array([-1, 0, 2])  # 左肩在xz平面上
-    right_shoulder = np.array([1, 0, 2])  # 右肩在xz平面上，与左肩对称
-    left_elbow = np.array([-2, 1, 1])  # 左肘向前抬起
-    right_elbow = np.array([2, 1, 1])  # 右肘向前抬起
+    # hip = np.array([0, 0, 0])  # 原点
+    # left_shoulder = np.array([-1, 0, 2])  # 左肩在xz平面上
+    # right_shoulder = np.array([1, 0, 2])  # 右肩在xz平面上，与左肩对称
+    # left_elbow = np.array([-2, 1, 1])  # 左肘向前抬起
+    # right_elbow = np.array([2, 1, 1])  # 右肘向前抬起
     
     # 计算左臂角度
     left_pitch, left_roll = calculate_left_arm_angles(hip, left_shoulder, right_shoulder, left_elbow)
