@@ -1,0 +1,26 @@
+已知：
+hip, left_shoulder, right_shoulder, left_elbow的三维坐标
+
+求：
+左上臂相对身体的旋转角度，用pitch和roll表示
+
+
+已知：
+left_shoulder, left_elbow, left_wrist的三维坐标
+
+求左前臂相对于左上臂的旋转角度
+
+已知：
+hip, left_shoulder, right_shoulder, Thorax,Nose, Head 的三维坐标
+
+求头部相对于身体的旋转角度，用pitch和yaw表示
+
+
+已知：
+left hip, right hip, spine, left knee, right knee 的三维坐标
+求左右大腿相对身体的旋转角度，用pitch和roll表示
+
+已知：
+left hip, right hip, left knee, right knee, left foot, right foot 的三维坐标
+求左右小腿相对大腿的旋转角度
+
