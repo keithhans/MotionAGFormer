@@ -2,12 +2,15 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 
-import sys
-import os
+# import sys
+# import os
 
 # sys.path.append(os.getcwd())
 from lib.utils import camera_to_world
 
+from calculate_head_angles import calculate_head_angles
+from calculate_arm_angles import calculate_left_arm_angles, calculate_right_arm_angles
+from calculate_forearm_angles import calculate_left_forearm_angle, calculate_right_forearm_angle
 
 def calculate_joint_angles(poses):
     """
@@ -82,24 +85,73 @@ if __name__ == "__main__":
     # 读取3D姿态数据
     poses = np.load('3d_poses.npy')
     
-    new_poses = []
+    joint_angles = []
 
     for i, pose in enumerate(poses):
-        rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
+        rot = [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
         rot = np.array(rot, dtype='float32')
         post_out = camera_to_world(pose, R=rot, t=0)
         post_out[:, 2] -= np.min(post_out[:, 2])
         max_value = np.max(post_out)
         post_out /= max_value
-        new_poses.append(post_out)
+
+        # 计算各个关节角度
+        angles = {}
+        
+        # 计算头部角度
+        head_pitch, head_yaw = calculate_head_angles(
+            post_out[0],  # hip
+            post_out[11], # left_shoulder
+            post_out[14], # right_shoulder
+            post_out[8],  # thorax
+            post_out[9],  # nose
+            post_out[10]  # head
+        )
+        angles['head'] = {'pitch': head_pitch, 'yaw': head_yaw}
+        
+        # 计算左臂角度
+        left_arm_pitch, left_arm_roll = calculate_left_arm_angles(
+            post_out[0],  # hip
+            post_out[11], # left_shoulder
+            post_out[14], # right_shoulder
+            post_out[12]  # left_elbow
+        )
+        angles['left_arm'] = {'pitch': left_arm_pitch, 'roll': left_arm_roll}
+        
+        # 计算左前臂角度
+        left_forearm_angle = calculate_left_forearm_angle(
+            post_out[11], # left_shoulder
+            post_out[12], # left_elbow
+            post_out[13]  # left_wrist
+        )
+        angles['left_forearm'] = {'angle': left_forearm_angle}
+        
+        # 计算右臂角度
+        right_arm_pitch, right_arm_roll = calculate_right_arm_angles(
+            post_out[0],  # hip
+            post_out[11], # left_shoulder
+            post_out[14], # right_shoulder
+            post_out[15]  # right_elbow
+        )
+        angles['right_arm'] = {'pitch': right_arm_pitch, 'roll': right_arm_roll}
+        
+        # 计算右前臂角度
+        right_forearm_angle = calculate_right_forearm_angle(
+            post_out[14], # right_shoulder
+            post_out[15], # right_elbow
+            post_out[16]  # right_wrist
+        )
+        angles['right_forearm'] = {'angle': right_forearm_angle}
+        
+        # 将姿态和角度一起存储
+        result = {
+            'pose': post_out,
+            'angles': angles
+        }
+        joint_angles.append(result)
 
         if i == 0:
-            print(post_out)
-
-    poses = np.array(new_poses)
-
-    # 计算关节角度
-    joint_angles = calculate_joint_angles(poses)
+            print(result)
     
     # 保存关节角度数据
     np.save('joint_angles.npy', joint_angles)
