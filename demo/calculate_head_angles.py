@@ -34,36 +34,34 @@ def calculate_head_angles(hip, left_shoulder, right_shoulder, thorax, nose, head
         print(body_rotation)
     
     # 计算头部方向向量
-    head_vec = head - nose
+    head_vec = head - thorax
     neck_vec = nose - thorax
-    head_forward = np.cross(head_vec, shoulder_vec)
     
     if verbose:
         print("\n4. 头部向量:")
         print(f"头顶向量: {head_vec}")
         print(f"颈部向量: {neck_vec}")
-        print(f"头部前向量: {head_forward}")
     
     # 标准化头部向量
     neck_vec = neck_vec / np.linalg.norm(neck_vec)
-    head_forward = head_forward / np.linalg.norm(head_forward)
+    head_vec = head_vec / np.linalg.norm(head_vec)
     
     if verbose:
         print("\n5. 标准化后的头部向量:")
         print(f"颈部向量: {neck_vec}")
-        print(f"头部前向量: {head_forward}")
+        print(f"头部向量: {head_vec}")
     
     # 将头部向量转换到身体坐标系
     neck_local = np.dot(body_rotation.T, neck_vec)
-    head_forward_local = np.dot(body_rotation.T, head_forward)
+    head_local = np.dot(body_rotation.T, head_vec)
     
     if verbose:
         print("\n6. 局部坐标系中的头部向量:")
         print(f"局部颈部向量: {neck_local}")
-        print(f"局部头部前向量: {head_forward_local}")
+        print(f"局部头部向量: {head_local}")
     
     # 计算pitch和yaw角度
-    pitch = np.degrees(np.arctan2(-neck_local[1], neck_local[2]))
+    pitch = np.degrees(np.arctan2(-head_local[1], head_local[2]))
     yaw = np.degrees(np.arctan2(neck_local[0], neck_local[1]))
     
     if verbose:
