@@ -27,7 +27,6 @@ def calculate_left_arm_angles(hip, left_shoulder, right_shoulder, left_elbow):
     # 5. 将上臂向量转换到身体坐标系
     upper_arm_local = np.dot(body_rotation.T, upper_arm)
     
-    print("upper_arm_local", upper_arm_local)
     # 6. 计算pitch和roll角度
     pitch = np.degrees(np.arctan2(-upper_arm_local[1], -upper_arm_local[2]))  # 前后摆动
     roll = np.degrees(np.arctan2(upper_arm_local[0], -upper_arm_local[2]))    # 左右摆动
