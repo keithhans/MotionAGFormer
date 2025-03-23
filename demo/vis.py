@@ -257,7 +257,17 @@ def get_pose3D(video_path, output_dir):
 
         output_3D[:, :, 0, :] = 0
         post_out_all = output_3D[0].cpu().detach().numpy()
+
+        # dump to npy
+        if idx == 0:
+            all_poses = []
+        all_poses.append(post_out_all)
         
+        # 在循环结束后保存
+        if idx == len(clips) - 1:
+            save_path = os.path.join(output_dir, '3d_poses.npy')
+            np.save(save_path, np.concatenate(all_poses, axis=0))
+
         for j, post_out in enumerate(post_out_all):
             rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
             rot = np.array(rot, dtype='float32')
