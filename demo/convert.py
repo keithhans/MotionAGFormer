@@ -107,7 +107,8 @@ if __name__ == "__main__":
             post_out[9],  # nose
             post_out[10]  # head
         )
-        angles['head'] = {'pitch': head_pitch, 'yaw': head_yaw}
+        angles['head_pitch'] = head_pitch
+        angles['head_yaw'] = head_yaw
         
         # 计算左臂角度
         left_arm_pitch, left_arm_roll = calculate_left_arm_angles(
@@ -116,15 +117,16 @@ if __name__ == "__main__":
             post_out[14], # right_shoulder
             post_out[12]  # left_elbow
         )
-        angles['left_arm'] = {'pitch': left_arm_pitch, 'roll': left_arm_roll}
-        
+        angles['left_arm_pitch'] = left_arm_pitch
+        angles['left_arm_roll'] = left_arm_roll
+
         # 计算左前臂角度
         left_forearm_angle = calculate_left_forearm_angle(
             post_out[11], # left_shoulder
             post_out[12], # left_elbow
             post_out[13]  # left_wrist
         )
-        angles['left_forearm'] = {'angle': left_forearm_angle}
+        angles['left_forearm_angle'] = left_forearm_angle
         
         # 计算右臂角度
         right_arm_pitch, right_arm_roll = calculate_right_arm_angles(
@@ -133,16 +135,17 @@ if __name__ == "__main__":
             post_out[14], # right_shoulder
             post_out[15]  # right_elbow
         )
-        angles['right_arm'] = {'pitch': right_arm_pitch, 'roll': right_arm_roll}
-        
+        angles['right_arm_pitch'] = right_arm_pitch
+        angles['right_arm_roll'] = right_arm_roll
+
         # 计算右前臂角度
         right_forearm_angle = calculate_right_forearm_angle(
             post_out[14], # right_shoulder
             post_out[15], # right_elbow
             post_out[16]  # right_wrist
         )
-        angles['right_forearm'] = {'angle': right_forearm_angle}
-        
+        angles['right_forearm_angle'] = right_forearm_angle
+                
         # 将姿态和角度一起存储
         result = {
             'pose': post_out,
