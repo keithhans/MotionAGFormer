@@ -256,31 +256,31 @@ def get_pose3D(video_path, output_dir):
             output_3D = output_3D[:, downsample]
 
         output_3D[:, :, 0, :] = 0
-        post_out_all = output_3D[0].cpu().detach().numpy()
+        pose_out_all = output_3D[0].cpu().detach().numpy()
 
         # dump to npy
         if idx == 0:
             all_poses = []
-        all_poses.append(post_out_all)
+        all_poses.append(pose_out_all)
         
         # 在循环结束后保存
         if idx == len(clips) - 1:
             save_path = os.path.join(output_dir, '3d_poses.npy')
             np.save(save_path, np.concatenate(all_poses, axis=0))
 
-        for j, post_out in enumerate(post_out_all):
+        for j, pose_out in enumerate(pose_out_all):
             rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
             rot = np.array(rot, dtype='float32')
-            post_out = camera_to_world(post_out, R=rot, t=0)
-            post_out[:, 2] -= np.min(post_out[:, 2])
-            max_value = np.max(post_out)
-            post_out /= max_value
+            pose_out = camera_to_world(pose_out, R=rot, t=0)
+            pose_out[:, 2] -= np.min(pose_out[:, 2])
+            max_value = np.max(pose_out)
+            pose_out /= max_value
 
             fig = plt.figure(figsize=(9.6, 5.4))
             gs = gridspec.GridSpec(1, 1)
             gs.update(wspace=-0.00, hspace=0.05) 
             ax = plt.subplot(gs[0], projection='3d')
-            show3Dpose(post_out, ax)
+            show3Dpose(pose_out, ax)
 
             output_dir_3D = output_dir +'pose3D/'
             os.makedirs(output_dir_3D, exist_ok=True)

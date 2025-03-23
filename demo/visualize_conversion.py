@@ -56,10 +56,10 @@ if __name__ == "__main__":
 
     rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
     rot = np.array(rot, dtype='float32')
-    post_out = camera_to_world(first_frame, R=rot, t=0)
-    post_out[:, 2] -= np.min(post_out[:, 2])
-    max_value = np.max(post_out)
-    post_out /= max_value
+    pose_out = camera_to_world(first_frame, R=rot, t=0)
+    pose_out[:, 2] -= np.min(pose_out[:, 2])
+    max_value = np.max(pose_out)
+    pose_out /= max_value
 
     
     # 计算关节角度
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     
     # 3D骨架图
     ax1 = fig.add_subplot(121, projection='3d')
-    plot_skeleton(ax1, post_out, '3D Skeleton')
+    plot_skeleton(ax1, pose_out, '3D Skeleton')
     
     # 关节角度图
     ax2 = fig.add_subplot(122)
