@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from convert import calculate_joint_angles
+from calculate_arm_angles import calculate_left_arm_angles, calculate_right_arm_angles
 
 import sys
 import os
@@ -31,6 +32,24 @@ def plot_skeleton(ax, pose, title):
     # 绘制关节点
     ax.scatter(pose[:,0], pose[:,1], pose[:,2], c='r', marker='o')
     
+    # 设置坐标轴比例一致
+    ax.set_box_aspect([1,1,1])  # 设置三个轴的比例相同
+    
+    # 确保显示范围一致
+    max_range = np.array([
+        pose[:,0].max()-pose[:,0].min(),
+        pose[:,1].max()-pose[:,1].min(),
+        pose[:,2].max()-pose[:,2].min()
+    ]).max() / 2.0
+    
+    mid_x = (pose[:,0].max()+pose[:,0].min()) * 0.5
+    mid_y = (pose[:,1].max()+pose[:,1].min()) * 0.5
+    mid_z = (pose[:,2].max()+pose[:,2].min()) * 0.5
+    
+    ax.set_xlim(mid_x - max_range, mid_x + max_range)
+    ax.set_ylim(mid_y - max_range, mid_y + max_range)
+    ax.set_zlim(mid_z - max_range, mid_z + max_range)
+    
     ax.set_title(title)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
@@ -52,7 +71,7 @@ if __name__ == "__main__":
     poses = np.load('3d_poses.npy')
     
     # 获取第一帧
-    first_frame = poses[0]
+    first_frame = poses[243]
 
     rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
     rot = np.array(rot, dtype='float32')
@@ -61,20 +80,28 @@ if __name__ == "__main__":
     max_value = np.max(pose_out)
     pose_out /= max_value
 
+    print(pose_out)
     
+    # 计算左臂角度
+    left_arm_pitch, left_arm_roll = calculate_left_arm_angles(
+        pose_out[0],  # hip
+        pose_out[11], # left_shoulder
+        pose_out[14], # right_shoulder
+        pose_out[12]  # left_elbow
+    )
+
+    print(f"左臂 Pitch (前后摆动): {left_arm_pitch:.2f}度")
+    print(f"左臂 Roll (左右摆动): {left_arm_roll:.2f}度")
+
     # 计算关节角度
     angles = calculate_joint_angles(poses[0:1])[0]
     
     # 创建图形
-    fig = plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(8, 8))
     
     # 3D骨架图
-    ax1 = fig.add_subplot(121, projection='3d')
-    plot_skeleton(ax1, pose_out, '3D Skeleton')
-    
-    # 关节角度图
-    ax2 = fig.add_subplot(122)
-    visualize_angles(ax2, angles)
+    ax = fig.add_subplot(111, projection='3d')
+    plot_skeleton(ax, pose_out, '3D Skeleton')
     
     plt.tight_layout()
     plt.show()
