@@ -71,7 +71,7 @@ if __name__ == "__main__":
     poses = np.load('3d_poses.npy')
     
     # 获取第一帧
-    first_frame = poses[243]
+    first_frame = poses[50]
 
     rot =  [0.1407056450843811, -0.1500701755285263, -0.755240797996521, 0.6223280429840088]
     rot = np.array(rot, dtype='float32')
@@ -92,6 +92,17 @@ if __name__ == "__main__":
 
     print(f"左臂 Pitch (前后摆动): {left_arm_pitch:.2f}度")
     print(f"左臂 Roll (左右摆动): {left_arm_roll:.2f}度")
+
+    # 计算右臂角度
+    right_arm_pitch, right_arm_roll = calculate_right_arm_angles(
+        pose_out[0],  # hip
+        pose_out[11], # left_shoulder
+        pose_out[14], # right_shoulder
+        pose_out[15]  # right_elbow
+    )
+
+    print(f"右臂 Pitch (前后摆动): {right_arm_pitch:.2f}度")
+    print(f"右臂 Roll (左右摆动): {right_arm_roll:.2f}度")
 
     # 计算关节角度
     angles = calculate_joint_angles(poses[0:1])[0]
