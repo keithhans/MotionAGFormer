@@ -15,7 +15,7 @@ sys.path.append(os.getcwd())
 from demo.lib.utils import normalize_screen_coordinates, camera_to_world
 from model.MotionAGFormer import MotionAGFormer
 
-from process_json import process_json
+from demo.process_json import process_json
 
 import matplotlib
 import matplotlib.pyplot as plt 
@@ -319,8 +319,12 @@ def get_pose3D(video_path, output_dir):
         image_3d = plt.imread(image_3d_dir[i])
 
         ## crop
-        edge = (image_2d.shape[1] - image_2d.shape[0]) // 2
-        image_2d = image_2d[:, edge:image_2d.shape[1] - edge]
+        #if image_2d.shape[1] > image_2d.shape[0]:  # 宽>高
+        #    edge = (image_2d.shape[1] - image_2d.shape[0]) // 2
+        #    image_2d = image_2d[:, edge:image_2d.shape[1] - edge]
+        #else:  # 高>宽
+        #    edge = (image_2d.shape[0] - image_2d.shape[1]) // 2
+        #    image_2d = image_2d[edge:image_2d.shape[0] - edge, :]
 
         edge = 130
         image_3d = image_3d[edge:image_3d.shape[0] - edge, edge:image_3d.shape[1] - edge]

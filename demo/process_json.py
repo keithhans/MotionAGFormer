@@ -18,20 +18,22 @@ def process_json(json_path):
     
     # 遍历每一帧
     for frame_idx, frame_data in enumerate(data):
-        # 遍历每个人
-        for person_idx, instance in enumerate(frame_data['instances']):
-            # 提取关键点坐标
-            kpts = np.array(instance['keypoints'])  # shape: (17, 2)
-            keypoints[person_idx, frame_idx] = kpts
-            
-            # 提取置信度分数
-            conf = np.array(instance['keypoint_scores'])  # shape: (17,)
-            scores[person_idx, frame_idx] = conf
+        # 只看第一个人
+        person_idx = 0
+        instance = frame_data['instances'][0]
+
+        # 提取关键点坐标
+        kpts = np.array(instance['keypoints'])  # shape: (17, 2)
+        keypoints[person_idx, frame_idx] = kpts
+        
+        # 提取置信度分数
+        conf = np.array(instance['keypoint_scores'])  # shape: (17,)
+        scores[person_idx, frame_idx] = conf
     
     return keypoints, scores
 
 def main():
-    json_path = '/Users/keith/Downloads/src/MotionAGFormer/demo/execise1s.json'
+    json_path = '/root/autodl-tmp/MotionAGFormer.my/demo/video/simpleactions.json'
     keypoints, scores = process_json(json_path)
     
     print(f"Keypoints shape: {keypoints.shape}")  # 应该是 (N, T, 17, 2)
