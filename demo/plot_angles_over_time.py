@@ -12,6 +12,8 @@ left_arm_pitch_data = []
 left_arm_roll_data = []
 right_arm_pitch_data = []
 right_arm_roll_data = []
+left_forearm_angle_data = []
+right_forearm_angle_data = []
 
 for i, frame in enumerate(joint_angles):
     angles = frame['angles']
@@ -23,8 +25,10 @@ for i, frame in enumerate(joint_angles):
     left_arm_roll = np.clip(angles['left_arm_roll'], -180, 180)
     right_arm_pitch = np.clip(angles['right_arm_pitch'], -180, 180)
     right_arm_roll = np.clip(angles['right_arm_roll'], -180, 180)
+    left_forearm_angle = np.clip(angles['left_forearm_angle'], -180, 180)
+    right_forearm_angle = np.clip(angles['right_forearm_angle'], -180, 180)
 
-    print(f"Angle: {i} {head_pitch:.1f} {head_yaw:.1f} {left_arm_pitch:.1f} {left_arm_roll:.1f} {right_arm_pitch:.1f} {right_arm_roll:.1f}")
+    print(f"Angle: {i} {head_pitch:.1f} {head_yaw:.1f} {left_arm_pitch:.1f} {left_arm_roll:.1f} {right_arm_pitch:.1f} {right_arm_roll:.1f} {left_forearm_angle:.1f} {right_forearm_angle:.1f}")
 
     # 收集数据
     head_pitch_data.append(head_pitch)
@@ -33,12 +37,14 @@ for i, frame in enumerate(joint_angles):
     left_arm_roll_data.append(left_arm_roll)
     right_arm_pitch_data.append(right_arm_pitch)
     right_arm_roll_data.append(right_arm_roll)
+    left_forearm_angle_data.append(left_forearm_angle)
+    right_forearm_angle_data.append(right_forearm_angle)
 
 # 创建图表
 plt.figure(figsize=(12, 8))
 
 # 绘制头部角度
-plt.subplot(2, 1, 1)
+plt.subplot(3, 1, 1)
 plt.plot(time, head_pitch_data, label='Head Pitch', color='blue')
 plt.plot(time, head_yaw_data, label='Head Yaw', color='red')
 plt.title('Head Angles over Time')
@@ -48,12 +54,22 @@ plt.legend()
 plt.grid(True)
 
 # 绘制手臂角度
-plt.subplot(2, 1, 2)
+plt.subplot(3, 1, 2)
 plt.plot(time, left_arm_pitch_data, label='Left Arm Pitch', color='green')
 plt.plot(time, left_arm_roll_data, label='Left Arm Roll', color='purple')
 plt.plot(time, right_arm_pitch_data, label='Right Arm Pitch', color='orange')
 plt.plot(time, right_arm_roll_data, label='Right Arm Roll', color='brown')
 plt.title('Arm Angles over Time')
+plt.xlabel('Frame')
+plt.ylabel('Angle (degrees)')
+plt.legend()
+plt.grid(True)
+
+# 绘制前臂角度
+plt.subplot(3, 1, 3)
+plt.plot(time, left_forearm_angle_data, label='Left Forearm Angle', color='cyan')
+plt.plot(time, right_forearm_angle_data, label='Right Forearm Angle', color='magenta')
+plt.title('Forearm Angles over Time')
 plt.xlabel('Frame')
 plt.ylabel('Angle (degrees)')
 plt.legend()
